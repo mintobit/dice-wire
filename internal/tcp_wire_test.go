@@ -32,8 +32,10 @@ func TestSend(t *testing.T) {
 
 	mockConn := mock.NewMockConn(ctrl)
 	var captured []byte
-	mockConn.EXPECT().Write(gomock.Any()).MinTimes(1).Do(func(buffer []byte) {
+	mockConn.EXPECT().Write(gomock.Any()).MinTimes(1).DoAndReturn(func(buffer []byte) (int, error) {
 		captured = append(captured, buffer...)
+
+		return len(buffer), nil
 	})
 
 	wire := NewTCPWire(50, mockConn)
